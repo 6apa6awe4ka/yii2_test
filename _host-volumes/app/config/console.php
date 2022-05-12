@@ -28,6 +28,17 @@ $config = [
         'db' => $db,
     ],
     'params' => $params,
+    'modules' => [
+        'db-manager' => [
+            'class' => 'bs\dbManager\Module',
+            // Flysystem adapter (optional) creocoder\flysystem\LocalFilesystem will be used as default. 
+            // 'flySystemDriver' => 'creocoder\flysystem\LocalFilesystem',
+            // path to directory for the dumps
+            'path' => '@app/backups',
+            // list of registerd db-components
+            'dbList' => ['db'],
+        ],
+    ],
     /*
     'controllerMap' => [
         'fixture' => [ // Fixture generation command line.
