@@ -3,6 +3,7 @@
 namespace app\controllers;
 
 use app\models\Dish;
+use app\models\DishIngredient;
 use yii\data\ActiveDataProvider;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
@@ -124,6 +125,39 @@ class DishController extends Controller
         $this->findModel($id)->delete();
 
         return $this->redirect(['index']);
+    }
+
+    /**
+     * @param int[] $ingredientIds IDS
+     * @return \yii\web\Response
+     * @throws NotFoundHttpException if the model cannot be found
+     */
+    public function actionSearch(array $ingredientIds)
+    {
+        if (count($ingredientIds) < 2) {
+            return $this->render('search_error', [
+                'error' => 'Вы должны ввести 2 или более ингредиентов.',
+            ]);
+        }
+
+        $query = DishIngredient::find()
+            ->select('dish_id')
+            ->groupBy('dish_id')
+            ->orderBy(['COUNT(*)' => SORT_DESC])
+            ->having(['>', 'COUNT(*)', 1])
+            ->where(['in', 'ingredient_id', $ingredientIds])
+        ;
+
+        $dishes = array_map(
+            function ($item) {
+                return $item->getDish()->one();
+            },
+            $query->all()
+        );
+
+        return $this->render('search', [
+            'dishes' => $dishes,
+        ]);
     }
 
     /**
