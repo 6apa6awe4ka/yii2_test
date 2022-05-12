@@ -20,8 +20,8 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <?php foreach ($dishes as $dish): ?>
         <div>
-            <div><?= $dish->id ?></div>
-            <div><?= $dish->name ?></div>
+            <div><?= $dish['id'] ?></div>
+            <div><?= $dish['name'] ?></div>
         </div>
     <?php endforeach; ?>
 
