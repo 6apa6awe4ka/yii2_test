@@ -16,11 +16,19 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Create Dish', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
+    <?php if ($dishes): ?>
+
     <?php foreach ($dishes as $dish): ?>
         <div>
             <div><?= $dish->id ?></div>
             <div><?= $dish->name ?></div>
         </div>
     <?php endforeach; ?>
+
+    <?php else: ?>
+
+        <div>Ничего не найдено</div>
+
+    <?php endif ?>
 
 </div>
