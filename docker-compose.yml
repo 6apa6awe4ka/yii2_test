@@ -1,4 +1,8 @@
 version: '2.2'
+
+volumes:
+  db-data:
+
 services:
 
   php-min:
@@ -16,6 +20,11 @@ services:
       - GITHUB_API_TOKEN=${GITHUB_API_TOKEN}
       - PHP_ENABLE_XDEBUG
       - TEST_RUNTIME_PATH=/tmp/runtime
+      - DB_HOST
+      - DB_PORT
+      - DB_USER
+      - DB_PASSWORD
+      - DB_NAME
     volumes:
       - ./tests:/tests:delegated
       # Framework testing
@@ -35,3 +44,14 @@ services:
     build:
       target: dev
     image: ${PHP_IMAGE_NAME}:${PHP_BASE_IMAGE_VERSION}${PHP_IMAGE_VERSION_SUFFIX}
+
+  db:
+    image: postgres:14.2-alpine
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    volumes:
+      - db-data:/var/lib/mysql
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
