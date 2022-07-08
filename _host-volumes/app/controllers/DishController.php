@@ -130,34 +130,16 @@ class DishController extends Controller
     /**
      * @param int[] $ingredientIds IDS
      * @return \yii\web\Response
-     * @throws NotFoundHttpException if the model cannot be found
      */
     public function actionSearch(array $ingredientIds)
     {
-        $sortOrder = SORT_DESC;
-
         if (count($ingredientIds) < 2) {
             return $this->render('search_error', [
                 'error' => 'Вы должны ввести 2 или более ингредиентов.',
             ]);
         }
 
-        $subQuery = DishIngredient::find()
-            ->select(['dish_id', 'COUNT(*) as cnt'])
-            ->groupBy('dish_id')
-            ->orderBy(['cnt' => $sortOrder])
-            ->having(['>', 'COUNT(*)', 1])
-            ->where(['in', 'ingredient_id', $ingredientIds])
-        ;
-
-        $query = (new \yii\db\Query())
-            ->select(['dish.id', 'dish.name'])
-            ->from($subQuery)
-            ->leftJoin('dish', 'dish.id = dish_id')
-            ->orderBy(['cnt' => $sortOrder])
-        ;
-        
-        $dishes = $query->all();
+        $dishes = Dish::searchQuery($ingredientIds)->all();
 
         return $this->render('search', [
             'dishes' => $dishes,
